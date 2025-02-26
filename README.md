@@ -203,8 +203,6 @@
 npm i litez-js
 npx litez init my-app
 cd my-app
-npx litez build
-npx serve dist
 ```
 
 ## License

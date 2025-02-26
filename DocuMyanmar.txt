@@ -1,0 +1,232 @@
+ဒီ README ကိုပိုမိုအသေးစိတ် ဖန်တီးပေးလိုက်ပါတယ်။ LiteZ.js ကို အစမှစပြီး အသုံးပြုနည်းကိုပါဖော်ပြထားပါတယ်။  
+
+---
+
+# LiteZ.js - Lightweight JavaScript Framework  
+
+LiteZ.js သည် **component-based UI rendering**, **reactive state management**, **routing system**, **middleware support**, **event handling**, **database integration (SQL, NoSQL, Firebase)** စသည်တို့ပါဝင်သည့် **lightweight JavaScript framework** တစ်ခုဖြစ်သည်။  
+
+⚡ **Key Features**  
+- Component-based architecture (ZJS file support)  
+- Virtual DOM rendering  
+- Reactive State Management  
+- Routing system with middleware support  
+- SQL, NoSQL, Firebase Realtime Database integration  
+- Event-driven architecture  
+- Theme management  
+- Plugin system for extendability  
+
+---
+
+## 🚀 Installation
+
+LiteZ.js ကို **CDN** မှတဆင့်သုံးနိုင်သည် -  
+```html
+<script src="path/to/LiteZ.js"></script>
+```
+သို့မဟုတ် project မှာ **import** ပြုလုပ်နိုင်သည် -  
+```js
+import LiteZ from './LiteZ.js';
+```
+
+---
+
+## 🎯 Quick Start
+
+### 1️⃣ **Component Creation & Rendering**  
+LiteZ.js သည် **component-based UI rendering** ကိုသုံးသည်။ Component တစ်ခုဖန်တီးပြီး render ပြုလုပ်ရန်:  
+
+```js
+LiteZ.createComponent('MyComponent', {
+  template: () => `<div>{{ message }}</div>`,
+  setup: () => {
+    const state = LiteZ.createState({ message: 'Hello LiteZ!' });
+    return { state };
+  },
+});
+
+// Render Component
+LiteZ.vRender('MyComponent', {}, '#app');
+```
+
+📌 **Explanation:**  
+- `createComponent(name, { template, setup })` → Component တစ်ခု register ပြုလုပ်သည်။  
+- `vRender(name, props, target)` → Component ကို DOM ထဲတွင် render ပြုလုပ်သည်။  
+- `createState(initialState)` → Component state ကို reactive အနေနဲ့ အသုံးပြုနိုင်သည်။  
+
+---
+
+## 🏗️ **State Management**
+
+LiteZ.js သည် **Reactive State Management** ကိုထောက်ပံ့သည်။  
+```js
+const counter = LiteZ.createState({ count: 0 });
+
+// Subscribe to state changes
+counter.subscribe((newState) => console.log('Updated State:', newState));
+
+// Update state
+counter.set({ count: counter.get('count') + 1 });
+```
+
+📌 **Explanation:**  
+- `createState(initialValue)` → Reactive state တစ်ခုဖန်တီးသည်။  
+- `state.get(key)` → State value ကိုယူသည်။  
+- `state.set(newValue)` → State ကို update ပြုလုပ်သည်။  
+- `state.subscribe(callback)` → State ကို listen ပြုလုပ်နိုင်သည်။  
+
+---
+
+## 🌍 **Routing System**
+LiteZ.js တွင် **router** feature ပါဝင်ပြီး, **single-page application (SPA)** များအတွက် သင့်လျော်သည်။  
+
+```js
+const routes = {
+  '/': { component: 'Home' },
+  '/about': { component: 'About' },
+};
+
+// Initialize router
+LiteZ.router(routes);
+```
+
+📌 **Explanation:**  
+- `LiteZ.router(routes)` → Routing ကို initialize ပြုလုပ်သည်။  
+- `routes` object မှ route များနှင့် component များကို သတ်မှတ်နိုင်သည်။  
+
+---
+
+## 🔄 **Middleware Integration**  
+Route တစ်ခုသို့ navigation ပြုလုပ်သောအခါ **middleware** အသုံးပြုနိုင်သည်။  
+
+```js
+LiteZ.useGlobalMiddleware(async ({ path }) => {
+  if (path === '/dashboard' && !user.isAuthenticated) {
+    return '/login'; // Redirect to login
+  }
+});
+```
+
+📌 **Explanation:**  
+- `useGlobalMiddleware(middleware)` → Global middleware သတ်မှတ်နိုင်သည်။  
+- Middleware မှ **authentication**, **permissions**, **logging** စသည်တို့ကို ထိန်းချုပ်နိုင်သည်။  
+
+---
+
+## 💾 **Database Integrations**  
+LiteZ.js သည် **SQL, NoSQL, Firebase Realtime Database** များကိုထောက်ပံ့သည်။  
+
+### 1️⃣ **IndexedDB (SQL-like)**  
+```js
+LiteZ.initSQL({ name: 'AppDB', stores: { users: { keyPath: 'id' } } });
+
+LiteZ.sqlAction('users', 'add', { value: { id: 1, name: 'John' } });
+```
+- `initSQL()` → IndexedDB (SQL-like) ကို initialize ပြုလုပ်သည်။  
+- `sqlAction(store, action, data)` → IndexedDB မှတဆင့် CRUD operations ပြုလုပ်နိုင်သည်။  
+
+---
+
+### 2️⃣ **LocalStorage (NoSQL)**  
+```js
+LiteZ.initNoSQL();
+
+LiteZ.noSQLAction('settings', 'put', { key: 'theme', value: 'dark' });
+```
+- `initNoSQL()` → LocalStorage (NoSQL) ကို initialize ပြုလုပ်သည်။  
+- `noSQLAction(collection, action, data)` → NoSQL database မှ CRUD operations ပြုလုပ်နိုင်သည်။  
+
+---
+
+### 3️⃣ **Firebase Realtime Database**  
+```js
+LiteZ.initFirebase({ config: firebaseConfig });
+
+LiteZ.firebaseAction('users', 'add', { value: { name: 'John Doe' } });
+```
+- `initFirebase()` → Firebase Realtime Database ကို initialize ပြုလုပ်သည်။  
+- `firebaseAction(path, action, data)` → Firebase database မှ CRUD operations ပြုလုပ်နိုင်သည်။  
+
+---
+
+## 🎨 **Theming System**
+```js
+LiteZ.initTheme({
+  defaultTheme: 'light',
+  styles: {
+    dark: { '--bg-color': '#222', '--text-color': '#fff' },
+    light: { '--bg-color': '#fff', '--text-color': '#000' },
+  },
+});
+
+// Switch theme
+LiteZ.setTheme('dark');
+```
+📌 **Explanation:**  
+- `initTheme({ defaultTheme, styles })` → Theme management ကို initialize ပြုလုပ်သည်။  
+- `setTheme(theme)` → Theme ကို **dark/light** ပြောင်းနိုင်သည်။  
+
+---
+
+## 🔌 **Plugin System**
+LiteZ.js တွင် **plugin support** ပါဝင်သည်။  
+```js
+const myPlugin = (app) => {
+  app.customFunction = () => console.log('Custom Plugin Loaded!');
+};
+
+LiteZ.usePlugin(myPlugin);
+LiteZ.customFunction();
+```
+
+📌 **Explanation:**  
+- `usePlugin(plugin)` → LiteZ.js ကို extend ပြုလုပ်နိုင်သည်။  
+
+---
+
+## 📢 **Event Handling (Event Bus)**
+```js
+LiteZ.on('user-logged-in', (user) => console.log('User:', user));
+
+LiteZ.emit('user-logged-in', { name: 'John Doe' });
+```
+
+📌 **Explanation:**  
+- `on(event, callback)` → Event listener register ပြုလုပ်သည်။  
+- `emit(event, payload)` → Event ကို trigger ပြုလုပ်သည်။  
+- `off(event, callback)` → Event listener ကို remove ပြုလုပ်သည်။  
+
+---
+
+## 🔐 **Authentication**
+LiteZ.js သည် authentication system တည်ဆောက်နိုင်ရန် support ပြုလုပ်သည်။  
+
+```js
+const auth = LiteZ.createAuth();
+
+// Login
+auth.login({ email: 'test@example.com', password: '123456' });
+
+// Logout
+auth.logout();
+```
+
+📌 **Explanation:**  
+- `createAuth()` → Authentication system ကို initialize ပြုလုပ်သည်။  
+- `auth.login(credentials)` → User ကို login ပြုလုပ်သည်။  
+- `auth.logout()` → User ကို logout ပြုလုပ်သည်။  
+
+---
+
+## 📜 **License**
+LiteZ.js သည် **MIT License** ဖြင့် ဖြန့်ချိထားသည်။  
+
+---
+
+📌 **Developer Notes:**  
+LiteZ.js ကို တိုးတက်အောင်မြင်စေရန် feedbacks & issues များကို တုံ့ပြန်ပေးနိုင်ပါသည်။ 😊  
+
+---
+
+ဒီ README documentation ကို **LiteZ.js** ကို အသုံးပြုလိုသော developer များအတွက် **အသေးစိတ်**, **ပြည့်စုံ**, **လွယ်ကူ** ဖြစ်စေရန် ဖန်တီးပေးလိုက်ပါတယ်။  
+လိုအပ်တာများ ရှိရင် ပြောပြနိုင်ပါတယ်။ 🚀🔥

@@ -1,232 +1,295 @@
-ဒီ README ကိုပိုမိုအသေးစိတ် ဖန်တီးပေးလိုက်ပါတယ်။ LiteZ.js ကို အစမှစပြီး အသုံးပြုနည်းကိုပါဖော်ပြထားပါတယ်။  
+### `LiteZ` ရဲ့ Features တွေကို ဥပမာနဲ့ ရှင်းပြချက်
+
+#### ၁. Component Management
+- **ဘာလဲ?**: ဒီအင်္ဂါရပ်က UI အစိတ်အပိုင်းတွေကို သီးသန့်ဖန်တီးပြီး ပြန်သုံးလို့ရအောင် လုပ်ပေးတယ်။ `.zjs` ဖိုင်တွေကနေ ဖန်တီးလို့လည်းရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: Button တစ်ခု၊ Card တစ်ခုလို အရာတွေကို တစ်နေရာထဲမှာ ဖန်တီးပြီး အနှံ့သုံးလို့ရတယ်။
+- **ဥပမာ**:
+  ```html
+  <!-- app.zjs -->
+  <template>
+    <button>{{ text }}</button>
+  </template>
+  <script>
+  () => ({
+    data: () => ({ text: "Click Me" })
+  })
+  </script>
+  ```
+  - ဒီလို `.zjs` ဖိုင်ကနေ button တစ်ခု ဖန်တီးပြီး၊ အောက်မှာ သုံးလို့ရတယ်။
+  ```javascript
+  LiteZ.createComponentFromFile('app.zjs', 'MyButton');
+  LiteZ.vRender('MyButton', {}, '#app');
+  ```
+  - ရလဒ်: Browser မှာ `<button>Click Me</button>` ပေါ်မယ်။
+
+#### ၂. State Management
+- **ဘာလဲ?**: Data တွေကို စီမံပြီး အပြောင်းအလဲရှိရင် UI ကို အလိုလိုပြောင်းပေးတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဥပမာ၊ count တစ်ခု တိုးသွားရင် မျက်နှာပြင်မှာ ချက်ချင်းပြောင်းပြမယ်။
+- **ဥပမာ**:
+  ```javascript
+  const state = LiteZ.createState({ count: 0 });
+  state.subscribe((data) => {
+    document.getElementById('app').innerHTML = `Count: ${data.count}`;
+  });
+  state.set({ count: 1 });
+  ```
+  - ရလဒ်: "Count: 0" ကနေ "Count: 1" အဖြစ် ပြောင်းသွားမယ်။
+
+#### ၃. Reactive Refs
+- **ဘာလဲ?**: တစ်ခုတည်းတဲ့ ဒေတာကို အလွယ်တကူ စီမံပေးတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ရိုးရှင်းတဲ့ တန်ဖိုး (ဥပမာ၊ နာမည်) တစ်ခုကို ပြောင်းလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  const name = LiteZ.createRef('Mg Mg');
+  name.subscribe((data) => {
+    document.getElementById('app').innerHTML = `Hello, ${data.value}`;
+  });
+  name.value = 'Aung Aung';
+  ```
+  - ရလဒ်: "Hello, Mg Mg" က "Hello, Aung Aung" ဖြစ်သွားမယ်။
+
+#### ၄. Hooks (useEffect)
+- **ဘာလဲ?**: ဒေတာပြောင်းရင် အလိုလို လုပ်ဆောင်မှုတွေ လုပ်ပေးတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဥပမာ၊ ဒေတာပြောင်းတိုင်း သတိပေးချက် ပြလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  const state = LiteZ.createState({ count: 0 });
+  LiteZ.useEffect(() => {
+    console.log('Count is now:', state.get('count'));
+  }, () => [state.get('count')]);
+  state.set({ count: 1 });
+  ```
+  - ရလဒ်: Console မှာ "Count is now: 0" ပြီးရင် "Count is now: 1" ပြမယ်။
+
+#### ၅. Global Store
+- **ဘာလဲ?**: App တစ်ခုလုံးအတွက် ဒေတာကို တစ်နေရာတည်းမှာ သိမ်းပေးတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဥပမာ၊ ဈေးခြင်းထဲက ပစ္စည်းတွေကို နေရာအနှံ့ သုံးလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  const store = LiteZ.createStore({
+    state: { items: 0 },
+    mutations: {
+      add(state) { state.set({ items: state.get('items') + 1 }); }
+    }
+  });
+  store.commit('add');
+  console.log(store.state.get('items')); // 1
+  ```
+
+#### ၆. Routing
+- **ဘာလဲ?**: စာမျက်နှာတွေကို လမ်းကြောင်းခွဲပြီး ပြပေးတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: `/home` နဲ့ `/about` လို စာမျက်နှာတွေ ခွဲလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.createComponent('Home', { template: () => '<h1>Home</h1>' });
+  LiteZ.router({ '/': { component: 'Home' } });
+  ```
+  - ရလဒ်: Browser မှာ `/` သွားရင် "Home" ပြမယ်။
+
+#### ၇. Virtual DOM Rendering
+- **ဘာလဲ?**: UI ကို မြန်မြန်ပြောင်းပေးဖို့ virtual DOM သုံးတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ပြောင်းလဲမှုအနည်းငယ်ကိုပဲ update လုပ်လို့ မြန်တယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.createComponent('Counter', {
+    template: (props) => `<div>${props.state.get('count')}</div>`,
+    setup: () => ({ state: LiteZ.createState({ count: 0 }) })
+  });
+  const state = LiteZ.vRender('Counter', {}, '#app');
+  state.set({ count: 1 });
+  ```
+  - ရလဒ်: "0" ကနေ "1" အဖြစ် ပြောင်းမယ်။
+
+#### ၈. Event Bus
+- **ဘာလဲ?**: အစိတ်အပိုင်းတွေကြား သတင်းပို့လို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဥပမာ၊ ခလုတ်နှိပ်ရင် တခြားနေရာကို သတိပေးလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.on('click', () => console.log('Button clicked!'));
+  LiteZ.emit('click');
+  ```
+  - ရလဒ်: Console မှာ "Button clicked!" ပြမယ်။
+
+#### ၉. Internationalization (i18n)
+- **ဘာလဲ?**: ဘာသာစကားမျိုးစုံ ပြလို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: မြန်မာလို၊ အင်္ဂလိပ်လို ပြောင်းပြလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.initI18n({
+    locale: 'my',
+    translations: { my: { hello: 'မင်္ဂလာပါ' }, en: { hello: 'Hello' } }
+  });
+  console.log(LiteZ.t('hello')); // မင်္ဂလာပါ
+  ```
+
+#### ၁၀. Themes
+- **ဘာလဲ?**: အသွင်အပြင် (theme) ပြောင်းလို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: Light/Dark mode လို ပြောင်းလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.initTheme({
+    defaultTheme: 'dark',
+    styles: { dark: { '--bg': '#333' } }
+  });
+  LiteZ.setTheme('dark');
+  ```
+  - ရလဒ်: Background က မဲနေမယ်။
+
+#### ၁၁. Forms
+- **ဘာလဲ?**: Form တွေကို လွယ်လွယ်ဖန်တီးပြီး စစ်ဆေးလို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: Login form လို အရာတွေ လွယ်ကူစွာ လုပ်လို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  const form = LiteZ.createForm({ name: '' }, { name: { required: true } });
+  form.submit((values) => console.log(values));
+  ```
+
+#### ၁၂. Animations
+- **ဘာလဲ?**: အရာဝတ္ထုတွေကို လှုပ်ရှားမှု ထည့်ပေးလို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ခလုတ်တွေ ဖြည်းဖြည်းပေါ်လာအောင် လုပ်လို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.animate('#button', [{ opacity: 0 }, { opacity: 1 }], { duration: 1000 });
+  ```
+
+#### ၁၃. Database Integration
+- **ဘာလဲ?**: ဒေတာတွေကို IndexedDB၊ localStorage၊ Firebase စတဲ့နေရာတွေမှာ သိမ်းလို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: သုံးသူဒေတာတွေ သိမ်းထားလို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.initNoSQL();
+  LiteZ.noSQLAction('users', 'add', { key: '1', value: 'Mg Mg' });
+  ```
+
+#### ၁၄. Plugins & Middleware
+- **ဘာလဲ?**: အပိုလုပ်ဆောင်ချက်တွေ ထည့်လို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဥပမာ၊ login မလုပ်ရင် စာမျက်နှာ မပြအောင် လုပ်လို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  LiteZ.useMiddleware((ctx) => console.log('Navigating to:', ctx.path));
+  ```
+
+#### ၁၅. Pre-built Modules
+- **ဘာလဲ?**: Cart၊ Social၊ Dashboard၊ Auth လို အသင့်သုံးလို့ရတဲ့ အစိတ်အပိုင်းတွေ ပါတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဈေးခြင်း စတင်ဖို့ အလွယ်တကူ လုပ်လို့ရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  const cart = LiteZ.createCart();
+  cart.addItem({ id: 1, price: 100 });
+  console.log(cart.getCart().total); // 100
+  ```
+
+#### ၁၆. Computed Properties
+- **ဘာလဲ?**: ဒေတာကနေ အလိုလို တွက်ထုတ်ပေးတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဈေးခြင်းထဲက စုစုပေါင်းကို ချက်ချင်းရတယ်။
+- **ဥပမာ**:
+  ```javascript
+  const state = LiteZ.createState({ price: 100 });
+  const total = LiteZ.createComputed(state, () => state.get('price') * 2);
+  console.log(total.get()); // 200
+  ```
+
+#### ၁၇. Directives
+- **ဘာလဲ?**: HTML ထဲမှာ အမိန့်တွေ ထည့်ပြီး ထိန်းလို့ရတယ်။
+- **ဘာကြောင့်အသုံးဝင်လဲ?**: ဥပမာ၊ အကွက်တစ်ခု ပြမပြ ထိန်းလို့ရတယ်။
+- **ဥပမာ**:
+  ```html
+  <div data-z-show="state.get('show')">Hello</div>
+  ```
 
 ---
 
-# LiteZ.js - Lightweight JavaScript Framework  
+### GitHub အတွက် README.md
+အခု ဒီအင်္ဂါရပ်တွေကို Markdown ဖော်မတ်နဲ့ ပြောင်းပြီး `README.md` အနေနဲ့ ရေးပေးမယ်။
 
-LiteZ.js သည် **component-based UI rendering**, **reactive state management**, **routing system**, **middleware support**, **event handling**, **database integration (SQL, NoSQL, Firebase)** စသည်တို့ပါဝင်သည့် **lightweight JavaScript framework** တစ်ခုဖြစ်သည်။  
+```markdown
+# LiteZ Framework
 
-⚡ **Key Features**  
-- Component-based architecture (ZJS file support)  
-- Virtual DOM rendering  
-- Reactive State Management  
-- Routing system with middleware support  
-- SQL, NoSQL, Firebase Realtime Database integration  
-- Event-driven architecture  
-- Theme management  
-- Plugin system for extendability  
+`LiteZ` က ပေါ့ပါးပြီး အစွမ်းထက်တဲ့ JavaScript framework တစ်ခုပါ။ အောက်မှာ ပါတဲ့ အင်္ဂါရပ်တွေကို ဥပမာနဲ့ ရှင်းပြထားပါတယ်။
 
----
+## Features
 
-## 🚀 Installation
-
-LiteZ.js ကို **CDN** မှတဆင့်သုံးနိုင်သည် -  
+### 1. Component Management
+UI အစိတ်အပိုင်းတွေကို သီးသန့် ဖန်တီးပြီး ပြန်သုံးလို့ရတယ်။
 ```html
-<script src="path/to/LiteZ.js"></script>
+<!-- app.zjs -->
+<template><button>{{ text }}</button></template>
+<script>(() => ({ data: () => ({ text: "Click Me" }) }))</script>
 ```
-သို့မဟုတ် project မှာ **import** ပြုလုပ်နိုင်သည် -  
-```js
-import LiteZ from './LiteZ.js';
+```javascript
+LiteZ.createComponentFromFile('app.zjs', 'MyButton');
+LiteZ.vRender('MyButton', {}, '#app');
 ```
 
----
+### 2. State Management
+ဒေတာပြောင်းရင် UI ကို အလိုလို ပြောင်းပေးတယ်။
+```javascript
+const state = LiteZ.createState({ count: 0 });
+state.subscribe((data) => document.getElementById('app').innerHTML = `Count: ${data.count}`);
+state.set({ count: 1 });
+```
 
-## 🎯 Quick Start
+### 3. Reactive Refs
+တစ်ခုတည်းတဲ့ ဒေတာကို လွယ်လွယ် စီမံလို့ရတယ်။
+```javascript
+const name = LiteZ.createRef('Mg Mg');
+name.subscribe((data) => document.getElementById('app').innerHTML = `Hello, ${data.value}`);
+name.value = 'Aung Aung';
+```
 
-### 1️⃣ **Component Creation & Rendering**  
-LiteZ.js သည် **component-based UI rendering** ကိုသုံးသည်။ Component တစ်ခုဖန်တီးပြီး render ပြုလုပ်ရန်:  
+### 4. Hooks (useEffect)
+ဒေတာပြောင်းရင် လုပ်ဆောင်မှု ထည့်လို့ရတယ်။
+```javascript
+const state = LiteZ.createState({ count: 0 });
+LiteZ.useEffect(() => console.log('Count:', state.get('count')), () => [state.get('count')]);
+state.set({ count: 1 });
+```
 
-```js
-LiteZ.createComponent('MyComponent', {
-  template: () => `<div>{{ message }}</div>`,
-  setup: () => {
-    const state = LiteZ.createState({ message: 'Hello LiteZ!' });
-    return { state };
-  },
+### 5. Global Store
+App တစ်ခုလုံးအတွက် ဒေတာ သိမ်းလို့ရတယ်။
+```javascript
+const store = LiteZ.createStore({
+  state: { items: 0 },
+  mutations: { add(state) { state.set({ items: state.get('items') + 1 }); } }
 });
-
-// Render Component
-LiteZ.vRender('MyComponent', {}, '#app');
+store.commit('add');
 ```
 
-📌 **Explanation:**  
-- `createComponent(name, { template, setup })` → Component တစ်ခု register ပြုလုပ်သည်။  
-- `vRender(name, props, target)` → Component ကို DOM ထဲတွင် render ပြုလုပ်သည်။  
-- `createState(initialState)` → Component state ကို reactive အနေနဲ့ အသုံးပြုနိုင်သည်။  
-
----
-
-## 🏗️ **State Management**
-
-LiteZ.js သည် **Reactive State Management** ကိုထောက်ပံ့သည်။  
-```js
-const counter = LiteZ.createState({ count: 0 });
-
-// Subscribe to state changes
-counter.subscribe((newState) => console.log('Updated State:', newState));
-
-// Update state
-counter.set({ count: counter.get('count') + 1 });
+### 6. Routing
+စာမျက်နှာတွေကို လမ်းကြောင်းခွဲပြီး ပြလို့ရတယ်။
+```javascript
+LiteZ.createComponent('Home', { template: () => '<h1>Home</h1>' });
+LiteZ.router({ '/': { component: 'Home' } });
 ```
 
-📌 **Explanation:**  
-- `createState(initialValue)` → Reactive state တစ်ခုဖန်တီးသည်။  
-- `state.get(key)` → State value ကိုယူသည်။  
-- `state.set(newValue)` → State ကို update ပြုလုပ်သည်။  
-- `state.subscribe(callback)` → State ကို listen ပြုလုပ်နိုင်သည်။  
-
----
-
-## 🌍 **Routing System**
-LiteZ.js တွင် **router** feature ပါဝင်ပြီး, **single-page application (SPA)** များအတွက် သင့်လျော်သည်။  
-
-```js
-const routes = {
-  '/': { component: 'Home' },
-  '/about': { component: 'About' },
-};
-
-// Initialize router
-LiteZ.router(routes);
-```
-
-📌 **Explanation:**  
-- `LiteZ.router(routes)` → Routing ကို initialize ပြုလုပ်သည်။  
-- `routes` object မှ route များနှင့် component များကို သတ်မှတ်နိုင်သည်။  
-
----
-
-## 🔄 **Middleware Integration**  
-Route တစ်ခုသို့ navigation ပြုလုပ်သောအခါ **middleware** အသုံးပြုနိုင်သည်။  
-
-```js
-LiteZ.useGlobalMiddleware(async ({ path }) => {
-  if (path === '/dashboard' && !user.isAuthenticated) {
-    return '/login'; // Redirect to login
-  }
+### 7. Virtual DOM Rendering
+UI ကို မြန်မြန် ပြောင်းပေးတယ်။
+```javascript
+LiteZ.createComponent('Counter', {
+  template: (props) => `<div>${props.state.get('count')}</div>`,
+  setup: () => ({ state: LiteZ.createState({ count: 0 }) })
 });
+LiteZ.vRender('Counter', {}, '#app');
 ```
 
-📌 **Explanation:**  
-- `useGlobalMiddleware(middleware)` → Global middleware သတ်မှတ်နိုင်သည်။  
-- Middleware မှ **authentication**, **permissions**, **logging** စသည်တို့ကို ထိန်းချုပ်နိုင်သည်။  
-
----
-
-## 💾 **Database Integrations**  
-LiteZ.js သည် **SQL, NoSQL, Firebase Realtime Database** များကိုထောက်ပံ့သည်။  
-
-### 1️⃣ **IndexedDB (SQL-like)**  
-```js
-LiteZ.initSQL({ name: 'AppDB', stores: { users: { keyPath: 'id' } } });
-
-LiteZ.sqlAction('users', 'add', { value: { id: 1, name: 'John' } });
-```
-- `initSQL()` → IndexedDB (SQL-like) ကို initialize ပြုလုပ်သည်။  
-- `sqlAction(store, action, data)` → IndexedDB မှတဆင့် CRUD operations ပြုလုပ်နိုင်သည်။  
-
----
-
-### 2️⃣ **LocalStorage (NoSQL)**  
-```js
-LiteZ.initNoSQL();
-
-LiteZ.noSQLAction('settings', 'put', { key: 'theme', value: 'dark' });
-```
-- `initNoSQL()` → LocalStorage (NoSQL) ကို initialize ပြုလုပ်သည်။  
-- `noSQLAction(collection, action, data)` → NoSQL database မှ CRUD operations ပြုလုပ်နိုင်သည်။  
-
----
-
-### 3️⃣ **Firebase Realtime Database**  
-```js
-LiteZ.initFirebase({ config: firebaseConfig });
-
-LiteZ.firebaseAction('users', 'add', { value: { name: 'John Doe' } });
-```
-- `initFirebase()` → Firebase Realtime Database ကို initialize ပြုလုပ်သည်။  
-- `firebaseAction(path, action, data)` → Firebase database မှ CRUD operations ပြုလုပ်နိုင်သည်။  
-
----
-
-## 🎨 **Theming System**
-```js
-LiteZ.initTheme({
-  defaultTheme: 'light',
-  styles: {
-    dark: { '--bg-color': '#222', '--text-color': '#fff' },
-    light: { '--bg-color': '#fff', '--text-color': '#000' },
-  },
-});
-
-// Switch theme
-LiteZ.setTheme('dark');
-```
-📌 **Explanation:**  
-- `initTheme({ defaultTheme, styles })` → Theme management ကို initialize ပြုလုပ်သည်။  
-- `setTheme(theme)` → Theme ကို **dark/light** ပြောင်းနိုင်သည်။  
-
----
-
-## 🔌 **Plugin System**
-LiteZ.js တွင် **plugin support** ပါဝင်သည်။  
-```js
-const myPlugin = (app) => {
-  app.customFunction = () => console.log('Custom Plugin Loaded!');
-};
-
-LiteZ.usePlugin(myPlugin);
-LiteZ.customFunction();
+## Installation
+```bash
+npm install litez
+npx litez init my-app
+cd my-app
+npx litez build
+npx serve dist
 ```
 
-📌 **Explanation:**  
-- `usePlugin(plugin)` → LiteZ.js ကို extend ပြုလုပ်နိုင်သည်။  
-
----
-
-## 📢 **Event Handling (Event Bus)**
-```js
-LiteZ.on('user-logged-in', (user) => console.log('User:', user));
-
-LiteZ.emit('user-logged-in', { name: 'John Doe' });
+## License
+MIT
 ```
 
-📌 **Explanation:**  
-- `on(event, callback)` → Event listener register ပြုလုပ်သည်။  
-- `emit(event, payload)` → Event ကို trigger ပြုလုပ်သည်။  
-- `off(event, callback)` → Event listener ကို remove ပြုလုပ်သည်။  
-
 ---
 
-## 🔐 **Authentication**
-LiteZ.js သည် authentication system တည်ဆောက်နိုင်ရန် support ပြုလုပ်သည်။  
+### ဘာကြောင့် ဒီလိုရေးတာလဲ?
+- **နားလည်လွယ်အောင်**: ရိုးရှင်းတဲ့ ဥပမာတွေနဲ့ ဘာလုပ်လို့ရလဲ ရှင်းပြထားတယ်။
+- **အသုံးပြုလွယ်အောင်**: Install လုပ်နည်းနဲ့ စမ်းသပ်နည်းကို ထည့်ထားတယ်။
+- **တိုတိုနဲ့ ပြည့်စုံအောင်**: အင်္ဂါရပ်အားလုံးကို ထည့်ပြီး အရှည်မကြီးအောင် ရေးထားတယ်။
 
-```js
-const auth = LiteZ.createAuth();
-
-// Login
-auth.login({ email: 'test@example.com', password: '123456' });
-
-// Logout
-auth.logout();
-```
-
-📌 **Explanation:**  
-- `createAuth()` → Authentication system ကို initialize ပြုလုပ်သည်။  
-- `auth.login(credentials)` → User ကို login ပြုလုပ်သည်။  
-- `auth.logout()` → User ကို logout ပြုလုပ်သည်။  
-
----
-
-## 📜 **License**
-LiteZ.js သည် **MIT License** ဖြင့် ဖြန့်ချိထားသည်။  
-
----
-
-📌 **Developer Notes:**  
-LiteZ.js ကို တိုးတက်အောင်မြင်စေရန် feedbacks & issues များကို တုံ့ပြန်ပေးနိုင်ပါသည်။ 😊  
-
----
-
-ဒီ README documentation ကို **LiteZ.js** ကို အသုံးပြုလိုသော developer များအတွက် **အသေးစိတ်**, **ပြည့်စုံ**, **လွယ်ကူ** ဖြစ်စေရန် ဖန်တီးပေးလိုက်ပါတယ်။  
-လိုအပ်တာများ ရှိရင် ပြောပြနိုင်ပါတယ်။ 🚀🔥
+GitHub မှာ ဒီ `README.md` ကို သုံးရင် သင့် `LiteZ` ကို လူတိုင်းနားလည်ပြီး စမ်းသုံးချင်လာမယ်။ ဘယ်နေရာကို ထပ်ပြင်ချင်လဲ ပြောပြပေးပါနော်!

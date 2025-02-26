@@ -200,7 +200,7 @@
 
 ## Installation
 ```bash
-npm install litez
+npm i litez-js
 npx litez init my-app
 cd my-app
 npx litez build

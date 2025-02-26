@@ -1,4 +1,4 @@
-### `LiteZ` Features Explained with Examples in English
+### `LiteZ` Features
 
 #### 1. Component Management
 - **What is it?**: Allows you to create reusable UI components, either programmatically or from `.zjs` files that combine templates, scripts, and styles.

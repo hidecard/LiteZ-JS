@@ -5,7 +5,7 @@ const path = require('path');
 const esbuild = require('esbuild');
 
 // Load LiteZ from litez.js (assumes it's in the same directory as the CLI)
-const LiteZ = require('./litez'); // Adjust path if litez.js is elsewhere
+const LiteZ = require('./litez.js'); // Adjust path if litez.js is elsewhere
 
 program.version('1.0.0').description('LiteZ CLI for project setup and builds');
 

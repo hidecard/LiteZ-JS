@@ -1,0 +1,27 @@
+{
+  "name": "listz-js",
+  "version": "1.0.0",
+  "description": "A lightweight JS framework",
+  "main": "litez.js",
+  "bin": {
+    "litez": "./litez-cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hidecard/LiteZ-JS.git"
+  },
+  "keywords": ["framework", "litez", "js"],
+  "author": "Hide Card",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^9.0.0",
+    "esbuild": "^0.17.0"
+  },
+  "bugs": {
+    "url": "https://github.com/hidecard/LiteZ-JS/issues"
+  },
+  "homepage": "https://github.com/hidecard/LiteZ-JS#readme"
+}

@@ -871,4 +871,9 @@ const LiteZ = {
     },
 };
 
-window.LiteZ = LiteZ;
+// Export for Node.js and global for browser
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = LiteZ; // Node.js export
+} else if (typeof window !== 'undefined') {
+    window.LiteZ = LiteZ; // Browser global
+}
